@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Countdown Timer</title>
   <style>
     body {
@@ -18,7 +18,7 @@
       overflow: hidden;
     }
     #timer {
-      font-size: 10rem;
+      font-size: 15rem;     /* 숫자 크기 크게 */
       font-weight: bold;
       color: #333;
     }
@@ -37,63 +37,67 @@
       margin-left: 10px;
       cursor: pointer;
     }
-    #explosionVideo {
-      display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 400px;
-      z-index: 10;
-    }
     #overlay {
       display: none;
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(0,0,0,0.5);
       z-index: 5;
+    }
+    #explosionGif {
+      display: none;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
   <div id="overlay"></div>
-  <video id="explosionVideo" src="explosion.mp4" muted playsinline></video>
+  <!-- 폭발 GIF 파일을 같은 폴더에 추가하세요 -->
+  <img id="explosionGif" src="explosion.gif" alt="Explosion GIF">
+  
   <div id="timer">0</div>
   <div id="controls">
-    <input type="number" id="secondsInput" value="10" min="0" />
+    <input type="number" id="secondsInput" value="10" min="0">
     <button id="startBtn">시작</button>
   </div>
-  <!-- explosion.mp3, explosion.mp4 파일을 같은 폴더에 추가하세요 -->
+
+  <!-- 폭발 효과음 파일도 동일 폴더에 추가 -->
   <audio id="explosionSound" src="explosion.mp3"></audio>
+
   <script>
     let timerInterval;
     const timerDisplay = document.getElementById('timer');
-    const secondsInput = document.getElementById('secondsInput');
-    const startBtn = document.getElementById('startBtn');
-    const explosionSound = document.getElementById('explosionSound');
-    const explosionVideo = document.getElementById('explosionVideo');
-    const overlay = document.getElementById('overlay');
+    const secondsInput  = document.getElementById('secondsInput');
+    const startBtn      = document.getElementById('startBtn');
+    const controls      = document.getElementById('controls');
+    const overlay       = document.getElementById('overlay');
+    const explosionGif  = document.getElementById('explosionGif');
+    const explosionSound= document.getElementById('explosionSound');
 
     startBtn.addEventListener('click', () => {
       clearInterval(timerInterval);
-      overlay.style.display = 'none';
-      explosionVideo.style.display = 'none';
-      explosionVideo.pause();
-      explosionVideo.currentTime = 0;
+
+      // 시작 UI 숨기기
+      controls.style.display = 'none';
+      overlay.style.display  = 'none';
+      explosionGif.style.display = 'none';
+
       let time = parseInt(secondsInput.value, 10);
       timerDisplay.textContent = time;
 
       timerInterval = setInterval(() => {
         time--;
-        if (time < 0) {
+        if (time <= 0) {
           clearInterval(timerInterval);
+          timerDisplay.textContent = 0;
           explosionSound.play();
-          overlay.style.display = 'block';
-          explosionVideo.style.display = 'block';
-          explosionVideo.play();
+          overlay.style.display      = 'block';
+          explosionGif.style.display = 'block';
         } else {
           timerDisplay.textContent = time;
         }
