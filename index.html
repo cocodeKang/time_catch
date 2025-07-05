@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countdown Timer</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f0f0f0;
+      font-family: sans-serif;
+      position: relative;
+      overflow: hidden;
+    }
+    #timer {
+      font-size: 10rem;
+      font-weight: bold;
+      color: #333;
+    }
+    #controls {
+      margin-top: 20px;
+    }
+    input[type="number"] {
+      font-size: 2rem;
+      width: 100px;
+      text-align: center;
+      padding: 5px;
+    }
+    button {
+      font-size: 1.5rem;
+      padding: 10px 20px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    #explosionVideo {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      z-index: 10;
+    }
+    #overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div id="overlay"></div>
+  <video id="explosionVideo" src="explosion.mp4" muted playsinline></video>
+  <div id="timer">0</div>
+  <div id="controls">
+    <input type="number" id="secondsInput" value="10" min="0" />
+    <button id="startBtn">시작</button>
+  </div>
+  <!-- explosion.mp3, explosion.mp4 파일을 같은 폴더에 추가하세요 -->
+  <audio id="explosionSound" src="explosion.mp3"></audio>
+  <script>
+    let timerInterval;
+    const timerDisplay = document.getElementById('timer');
+    const secondsInput = document.getElementById('secondsInput');
+    const startBtn = document.getElementById('startBtn');
+    const explosionSound = document.getElementById('explosionSound');
+    const explosionVideo = document.getElementById('explosionVideo');
+    const overlay = document.getElementById('overlay');
+
+    startBtn.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      overlay.style.display = 'none';
+      explosionVideo.style.display = 'none';
+      explosionVideo.pause();
+      explosionVideo.currentTime = 0;
+      let time = parseInt(secondsInput.value, 10);
+      timerDisplay.textContent = time;
+
+      timerInterval = setInterval(() => {
+        time--;
+        if (time < 0) {
+          clearInterval(timerInterval);
+          explosionSound.play();
+          overlay.style.display = 'block';
+          explosionVideo.style.display = 'block';
+          explosionVideo.play();
+        } else {
+          timerDisplay.textContent = time;
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
